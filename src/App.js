@@ -41,8 +41,8 @@ class App extends Component {
     this.state = {
       title: 'Catalog Viewer',
       catalogs: [...catalogs],
-      currentIndex: -1,
-      catalogSelected: catalogs[3],
+      currentIndex: 0,
+      catalogSelected: catalogs[0],
       slideActive: false,
       slideTimer: null,
       slideDuration: 3000,
@@ -51,33 +51,66 @@ class App extends Component {
     this.previousClick = this.previousClick.bind(this);
     this.nextClick = this.nextClick.bind(this);
     this.slideChange = this.slideChange.bind(this);
-    this.resetSlideTimer = this.resetSlideTimer.bind(this);
-    this.onSlideChange = this.onSlideChange.bind(this);
+    // this.resetSlideTimer = this.resetSlideTimer.bind(this);
+    // this.onSlideChange = this.onSlideChange.bind(this);
   }
 
   selectedCatalog(index) {
-
+    this.setState({
+      catalogSelected: catalogs[index],
+      currentIndex: index
+    })
   }
 
   previousClick() {
-
+    
+    if(this.state.currentIndex == 0) {
+      this.state.currentIndex = 3;
+    } else {
+      this.state.currentIndex -= 1;
+    }
+    this.selectedCatalog(this.state.currentIndex);
   }
 
   nextClick() {
-
+    
+    if(this.state.currentIndex == 3) {
+      this.state.currentIndex = 0;
+    } else {
+      
+      this.state.currentIndex += 1;
+    }
+    this.selectedCatalog(this.state.currentIndex);
   }
 
-  slideChange(event) {
-
+  startCarousel() {
+    this.setState({
+      slideActive: true
+    })
+    setInterval(() => {
+      this.nextClick();
+    },3000);
   }
 
-  resetSlideTimer(isActive = false) {
-
+  stopCarousel() {
+    this.setState({
+      slideActive: false,
+    })
+    this.selectedCatalog(this.state.currentIndex);
+    this.state.catalogSelected = catalogs[this.state.currentIndex];
   }
 
-  onSlideChange() {
+  
 
-  }
+  slideChange() {
+    if (this.state.slideActive === false) {
+      
+      this.startCarousel();
+    }else if (this.state.slideActive === true) {
+      
+      this.stopCarousel();
+    }
+  };
 
   render() {
     return (
